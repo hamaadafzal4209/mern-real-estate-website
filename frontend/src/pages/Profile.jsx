@@ -1,26 +1,58 @@
 import { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from "../firebase";
+import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/user/userSlice';
 
 function Profile() {
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
   const [filePercentage, setFilePercentage] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
-  const [formData, setFormData] = useState({});
-
+  const [formData, setFormData] = useState({
+    username: currentUser.username,
+    email: currentUser.email,
+    password: "",
+    avatar: currentUser.avatar
+  });
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(`/backend/user/update/${currentUser._id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(updateUserFailure(data.message))
+        return;
+      }
+      dispatch(updateUserSuccess(data));
+    } catch (error) {
+      dispatch(updateUserFailure(error.message));
+    }
+  }
+
   useEffect(() => {
     if (file) {
       handleFileUpload(file);
     }
-  },[file])
+  }, [file])
 
   const handleFileUpload = (file) => {
     const storage = getStorage(app);
@@ -37,7 +69,6 @@ function Profile() {
         setFileUploadError(true);
       },
       () => {
-        // When the upload is complete, get the download URL
         getDownloadURL(uploadTask.snapshot.ref)
           .then((downloadURL) => {
             setFormData({ ...formData, avatar: downloadURL });
@@ -52,7 +83,7 @@ function Profile() {
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-center text-3xl font-bold my-7'>Profile</h1>
-      <form className='flex flex-col gap-4'>
+      <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
         <input type="file" ref={fileRef} hidden accept='image/*' onChange={handleFileChange} />
         <img onClick={() => fileRef.current.click()} src={formData.avatar || currentUser.avatar} alt="profile" className='h-24 w-24 self-center border-2 rounded-full cursor-pointer object-cover' />
         <p className='text-center text-sm'>
@@ -66,12 +97,12 @@ function Profile() {
             </span>
           )}
         </p>
-        <input type="text" placeholder='username' className='p-3 border rounded-lg' id='username' />
-        <input type="email" placeholder='email' className='p-3 border rounded-lg' id='email' />
-        <input type="text" placeholder='password' className='p-3 border rounded-lg' id='password' />
+        <input type="text" placeholder='username' className='p-3 border rounded-lg' id='username' value={formData.username} onChange={handleChange} />
+        <input type="email" placeholder='email' className='p-3 border rounded-lg' id='email' value={formData.email} onChange={handleChange} />
+        <input type="password" placeholder='password' className='p-3 border rounded-lg' id='password' onChange={handleChange} />
         <button className='bg-slate-700 text-white p-3 rounded-lg font-semibold hover:bg-slate-600 disabled:bg-slate-500'>Update</button>
       </form>
-      <div className="flex items-center justify-between mt-4">
+      <div className="flex items-center justify-between my-4">
         <span className='text-red-700 cursor-pointer hover:underline'>Delete Account </span>
         <span className='text-red-700 cursor-pointer hover:underline'>Sign Out </span>
       </div>

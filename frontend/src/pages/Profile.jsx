@@ -5,12 +5,13 @@ import { app } from "../firebase";
 import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/user/userSlice';
 
 function Profile() {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
   const [filePercentage, setFilePercentage] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
+  const [updateSuccess, setUpdateSuccess] = useState(false);
   const [formData, setFormData] = useState({
     username: currentUser.username,
     email: currentUser.email,
@@ -43,6 +44,7 @@ function Profile() {
         return;
       }
       dispatch(updateUserSuccess(data));
+      setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error.message));
     }
@@ -100,12 +102,16 @@ function Profile() {
         <input type="text" placeholder='username' className='p-3 border rounded-lg' id='username' value={formData.username} onChange={handleChange} />
         <input type="email" placeholder='email' className='p-3 border rounded-lg' id='email' value={formData.email} onChange={handleChange} />
         <input type="password" placeholder='password' className='p-3 border rounded-lg' id='password' onChange={handleChange} />
-        <button className='bg-slate-700 text-white p-3 rounded-lg font-semibold hover:bg-slate-600 disabled:bg-slate-500'>Update</button>
+        <button disabled={loading} className='bg-slate-700 text-white p-3 rounded-lg font-semibold hover:bg-slate-600 disabled:bg-slate-500'>
+          {loading ? 'Loading...' : 'Update'}
+        </button>
       </form>
       <div className="flex items-center justify-between my-4">
         <span className='text-red-700 cursor-pointer hover:underline'>Delete Account </span>
         <span className='text-red-700 cursor-pointer hover:underline'>Sign Out </span>
       </div>
+      <p className='text-red-700'>{error && error}</p>
+      <p className='text-green-700'>{updateSuccess && 'User is updated succesfully!'}</p>
     </div>
   );
 }

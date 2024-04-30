@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from "../firebase";
-import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess } from '../redux/user/userSlice';
+import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess, signOutUserFailure, signOutUserStart, signOutUserSuccess } from '../redux/user/userSlice';
 
 function Profile() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -81,32 +81,56 @@ function Profile() {
       }
     );
   };
+
   const handleDeleteUser = async () => {
     try {
       dispatch(deleteUserStart());
       const res = await fetch(`/backend/user/delete/${currentUser._id}`, {
         method: 'DELETE',
       });
-  
+
       if (res.status === 404) {
-        // Handle 404 error
         dispatch(deleteUserFailure('User not found'));
         return;
       }
-  
+
       const data = await res.json();
-  
+
       if (data.success === false) {
         dispatch(deleteUserFailure(data.message));
         return;
       }
-  
+
       dispatch(deleteUserSuccess(data));
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
   }
-  
+
+  const handleSignOut = async () => {
+    try {
+      dispatch(signOutUserStart());
+      const res = await fetch('/backend/auth/signout');
+      const data = await res.json();
+
+      if (res.status === 404) {
+        dispatch(signOutUserFailure('User not found'));
+        return;
+      }
+
+      if (data.success === false) {
+        dispatch(signOutUserFailure(data.message));
+        return;
+      }
+
+      dispatch(signOutUserSuccess());
+
+    } catch (error) {
+      dispatch(signOutUserFailure(error.message));
+    }
+  }
+
+
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-center text-3xl font-bold my-7'>Profile</h1>
@@ -133,7 +157,7 @@ function Profile() {
       </form>
       <div className="flex items-center justify-between my-4">
         <span onClick={handleDeleteUser} className='text-red-700 cursor-pointer hover:underline'>Delete Account </span>
-        <span className='text-red-700 cursor-pointer hover:underline'>Sign Out </span>
+        <span onClick={handleSignOut} className='text-red-700 cursor-pointer hover:underline'>Sign Out </span>
       </div>
       <p className='text-red-700'>{error && error}</p>
       <p className='text-green-700'>{updateSuccess && 'User is updated succesfully!'}</p>

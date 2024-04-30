@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from "../firebase";
-import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/user/userSlice';
+import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess } from '../redux/user/userSlice';
 
 function Profile() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -81,7 +81,32 @@ function Profile() {
       }
     );
   };
-
+  const handleDeleteUser = async () => {
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/backend/user/delete/${currentUser._id}`, {
+        method: 'DELETE',
+      });
+  
+      if (res.status === 404) {
+        // Handle 404 error
+        dispatch(deleteUserFailure('User not found'));
+        return;
+      }
+  
+      const data = await res.json();
+  
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+  
+      dispatch(deleteUserSuccess(data));
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  }
+  
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-center text-3xl font-bold my-7'>Profile</h1>
@@ -107,7 +132,7 @@ function Profile() {
         </button>
       </form>
       <div className="flex items-center justify-between my-4">
-        <span className='text-red-700 cursor-pointer hover:underline'>Delete Account </span>
+        <span onClick={handleDeleteUser} className='text-red-700 cursor-pointer hover:underline'>Delete Account </span>
         <span className='text-red-700 cursor-pointer hover:underline'>Sign Out </span>
       </div>
       <p className='text-red-700'>{error && error}</p>

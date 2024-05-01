@@ -9,11 +9,14 @@ function CreateListing() {
         imageUrls: [],
     });
     const [imageUploadError, setImageUploadError] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
     console.log(formData);
 
     const handleImageSubmit = () => {
         if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
+            setUploading(true);
+            setImageUploadError(false);
             const promises = [];
 
             for (let i = 0; i < files.length; i++) {
@@ -24,13 +27,16 @@ function CreateListing() {
                 .then((urls) => {
                     setFormData({ ...formData, imageUrls: formData.imageUrls.concat(urls) });
                     setImageUploadError(false);
+                    setUploading(false);
                 })
                 .catch(() => {
                     setImageUploadError('Image upload failed (2 mb max per image)');
+                    setUploading(false);
                 });
         }
         else {
             setImageUploadError('You can only upload 6 images per listing');
+            setUploading(false);
         }
     };
 
@@ -126,7 +132,9 @@ function CreateListing() {
                     <p className="font-semibold">Images:<span className="font-normal text-gray-600 ml-2">The first images will be cover (max 6)</span></p>
                     <div className="flex items-center gap-3">
                         <input onChange={(e) => setFiles(e.target.files)} className="p-3 border border-gray-300 rounded w-full" type="file" name="" id="images" accept="image/*" multiple />
-                        <button type="button" onClick={handleImageSubmit} className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80">Upload</button>
+                        <button disabled={uploading} type="button" onClick={handleImageSubmit} className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80">
+                            {uploading ? 'uploading...' : 'Upload'}
+                        </button>
                     </div>
                     <p className="text-red-700 text-sm">{imageUploadError && imageUploadError}</p>
                     {

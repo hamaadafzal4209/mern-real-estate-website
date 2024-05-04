@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css/bundle';
 import { FaBath, FaBed, FaChair, FaMapMarkerAlt, FaParking, FaShare, } from 'react-icons/fa';
+import Contact from '../components/Contact';
 
 
 export default function Listing() {
@@ -127,13 +128,9 @@ export default function Listing() {
                             </li>
                         </ul>
                         {currentUser && listing.userRef !== currentUser._id && !contact && (
-                            <button
-                                onClick={() => setContact(true)}
-                                className='bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 p-3'
-                            >
-                                Contact landlord
-                            </button>
+                            <button onClick={() => setContact(true)} className='w-full text-center bg-slate-700 text-white p-3 rounded-lg hover:opacity-95'>Contact landlord</button>
                         )}
+                        {contact && <Contact listing={listing} />}
                     </div>
                 </div>
             )}

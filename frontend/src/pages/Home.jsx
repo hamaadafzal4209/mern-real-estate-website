@@ -5,6 +5,7 @@ import SwiperCore from 'swiper';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css/bundle';
 import ListingCard from '../components/ListingCard';
+import Footer from '../components/Footer';
 
 function Home() {
 
@@ -132,7 +133,9 @@ function Home() {
           </div>
         )}
       </div>
-    </div >)
+      <Footer />
+    </div >
+  )
 }
 
 export default Home;

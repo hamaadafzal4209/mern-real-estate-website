@@ -182,7 +182,7 @@ function Search() {
             {/* right section */}
             <div className="flex-1">
                 <h1 className="text-3xl font-semibold p-3 border-b text-slate-700 mt-5">Listing Results:</h1>
-                <div className="p-7 flex flex-wrap gap-6">
+                <div className="p-7 allListingContainer">
                     {!listings && listings.length === 0 && (
                         <p className="text-3xl text-slate-700" >No listing found!</p>
                     )}

@@ -5,6 +5,7 @@ import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
 import listingRouter from "./routes/listing.route.js";
 import cookieParser from "cookie-parser";
+import path from 'path';
 
 dotenv.config();
 const app = express();
@@ -19,9 +20,17 @@ mongoose.connect(process.env.MONGODB)
         console.log("Error: ", err);
     });
 
+const __dirname = path.resolve();
+
 app.use('/backend/user', userRouter);
 app.use('/backend/auth', authRouter);
 app.use('/backend/listing', listingRouter);
+
+app.use(express.static(path.join(__dirname, '/frontend/dist')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index,html'));
+})
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;

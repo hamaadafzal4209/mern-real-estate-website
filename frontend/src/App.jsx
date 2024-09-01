@@ -13,7 +13,7 @@ import Search from "./pages/Search"
 
 function App() {
   return (
-    <>
+    <div className="bg-gray-900 min-h-screen">
       <BrowserRouter>
         <Header />
         <Routes>
@@ -31,7 +31,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
-    </>
+    </div>
   )
 }
 

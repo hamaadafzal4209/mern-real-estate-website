@@ -174,12 +174,12 @@ function Profile() {
 
   return (
     <div className='p-3 max-w-lg mx-auto'>
-      <h1 className='text-center text-3xl font-bold my-7'>Profile</h1>
+      <h1 className='text-center text-3xl font-bold my-7 text-white'>Profile</h1>
       <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
         <input type="file" ref={fileRef} hidden accept='image/*' onChange={handleFileChange} />
         <img onClick={() => fileRef.current.click()} src={formData.avatar || currentUser.avatar} alt="profile" className='h-24 w-24 self-center border-2 rounded-full cursor-pointer object-cover' />
         <p className='text-center text-sm'>
-          {fileUploadError && <span className='text-center text-red-700'>Error Image Upload</span>}
+          {fileUploadError && <span className='text-center text-red-500'>Error Image Upload</span>}
           {filePercentage > 0 && filePercentage < 100 && (
             <span>{`Uploading ${filePercentage}%`}</span>
           )}
@@ -192,7 +192,7 @@ function Profile() {
         <input type="text" placeholder='username' className='p-3 border rounded-lg' id='username' value={formData.username} onChange={handleChange} />
         <input type="email" placeholder='email' className='p-3 border rounded-lg' id='email' value={formData.email} onChange={handleChange} />
         <input type="password" placeholder='password' className='p-3 border rounded-lg' id='password' onChange={handleChange} />
-        <button disabled={loading} className='bg-slate-700 text-white p-3 rounded-lg font-semibold hover:bg-slate-600 disabled:bg-slate-500'>
+        <button disabled={loading} className='bg-blue-700 text-white p-3 rounded-lg font-semibold hover:bg-blue-800 disabled:bg-blue-300'>
           {loading ? 'Loading...' : 'Update'}
         </button>
         <Link className='bg-green-700 text-white text-center p-3 rounded-lg uppercase font-semibold hover:bg-green-800' to="/create-listing">
@@ -200,27 +200,27 @@ function Profile() {
         </Link>
       </form>
       <div className="flex items-center justify-between my-4">
-        <span onClick={handleDeleteUser} className='text-red-700 cursor-pointer hover:underline'>Delete Account </span>
-        <span onClick={handleSignOut} className='text-red-700 cursor-pointer hover:underline'>Sign Out </span>
+        <span onClick={handleDeleteUser} className='text-red-500 cursor-pointer hover:underline'>Delete Account </span>
+        <span onClick={handleSignOut} className='text-red-500 cursor-pointer hover:underline'>Sign Out </span>
       </div>
-      <p className='text-red-700'>{error && error}</p>
+      <p className='text-red-500'>{error && error}</p>
       <p className='text-green-700'>{updateSuccess && 'User is updated succesfully!'}</p>
-      <button onClick={handleShowListings} className='text-green-700 rounded-lg w-full p-3'>Show Listings</button>
-      <p className='text-red-700'>{showListingsError ? 'Error Showing Listings' : ''}</p>
+      <button onClick={handleShowListings} className='text-green-500 rounded-lg w-full p-3'>Show Listings</button>
+      <p className='text-red-500'>{showListingsError ? 'Error Showing Listings' : ''}</p>
       {
         userListing && userListing.length > 0 &&
-        <div className='flex flex-col gap-4'>
-          <h1 className='text-2xl text-center font-semibold mt-7'>Your Listing</h1>
+        <div className='flex flex-col gap-4 mb-10'>
+          <h1 className='text-2xl text-center font-semibold mt-7 text-white'>Your Listing</h1>
           {userListing.map((listing) => (
             <div className="flex items-center gap-4 justify-between rounded-lg border p-3" key={listing._id}>
               <Link to={`/listing/${listing._id}`}>
                 <img className='h-[70px] w-[70px] object-contain' src={listing.imageUrls[0]} alt="listing cover" />
               </Link>
-              <Link className="hover:underline text-slate-700 font-semibold flex-1 truncate" to={`/listing/${listing._id}`}>
+              <Link className="hover:underline text-gray-300 font-semibold flex-1 truncate" to={`/listing/${listing._id}`}>
                 <p>{listing.name}</p>
               </Link>
               <div className="flex flex-col font-semibold items-center">
-                <button onClick={() => handleListingDelete(listing._id)} className='text-red-700 uppercase'>Delete</button>
+                <button onClick={() => handleListingDelete(listing._id)} className='text-red-500 uppercase'>Delete</button>
                 <Link to={`/update-listing/${listing._id}`}>
                   <button className='text-green-700 uppercase'>Edit</button>
                 </Link>

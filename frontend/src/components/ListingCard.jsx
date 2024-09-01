@@ -3,7 +3,7 @@ import { MdLocationOn } from 'react-icons/md';
 
 function ListingCard({ listing }) {
     return (
-        <div className='bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg'>
+        <div className='bg-white overflow-hidden rounded-md'>
             <Link to={`/listing/${listing._id}`}>
                 <img
                     src={listing.imageUrls[0] || 'https://static.vecteezy.com/system/resources/thumbnails/022/138/099/small/home-for-sale-real-estate-sign-in-front-of-house-generative-ai-photo.jpg'}

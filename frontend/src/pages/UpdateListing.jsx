@@ -148,7 +148,7 @@ function UpdateListing() {
     };
 
     return (
-        <main className='p-3 pb-20 max-w-4xl mx-auto'>
+        <main className='p-3 pb-20 max-w-4xl mx-auto bg-gray-900 text-white'>
             <h1 className='text-center font-semibold text-3xl my-7'>Update a Listing</h1>
             <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row gap-4'>
                 {/* left section */}
@@ -156,7 +156,7 @@ function UpdateListing() {
                     <input
                         type="text"
                         placeholder='Name'
-                        className='border p-3 rounded-lg'
+                        className='border border-gray-600 bg-gray-800 p-3 rounded-lg text-white'
                         id='name'
                         maxLength={60}
                         minLength={10}
@@ -166,7 +166,7 @@ function UpdateListing() {
                     />
                     <textarea
                         placeholder='Description'
-                        className='border p-3 rounded-lg'
+                        className='border border-gray-600 bg-gray-800 p-3 rounded-lg text-white'
                         id='description'
                         required
                         onChange={handleChange}
@@ -175,7 +175,7 @@ function UpdateListing() {
                     <input
                         type="text"
                         placeholder='Address'
-                        className='border p-3 rounded-lg'
+                        className='border border-gray-600 bg-gray-800 p-3 rounded-lg text-white'
                         id='address'
                         maxLength={60}
                         minLength={10}
@@ -213,7 +213,7 @@ function UpdateListing() {
                         {['bedrooms', 'bathrooms', 'regularPrice', 'discountPrice'].map(field => (
                             <div className="flex items-center gap-3" key={field}>
                                 <input
-                                    className='p-3 border border-gray-300 rounded-lg'
+                                    className='p-3 border border-gray-600 bg-gray-800 rounded-lg text-white'
                                     type="number"
                                     id={field}
                                     min={field === 'regularPrice' ? '50' : '1'}
@@ -232,11 +232,11 @@ function UpdateListing() {
                 </div>
                 {/* right section */}
                 <div className="flex flex-col gap-4 flex-1">
-                    <p className="font-semibold">Images:<span className="font-normal text-gray-600 ml-2">The first image will be the cover (max 6)</span></p>
+                    <p className="font-semibold">Images:<span className="font-normal text-gray-400 ml-2">The first image will be the cover (max 6)</span></p>
                     <div className="flex items-center gap-3">
                         <input
                             onChange={(e) => setFiles(e.target.files)}
-                            className="p-3 border border-gray-300 rounded w-full"
+                            className="p-3 border border-gray-600 bg-gray-800 rounded w-full text-white"
                             type="file"
                             accept="image/*"
                             multiple
@@ -245,19 +245,19 @@ function UpdateListing() {
                             disabled={uploading}
                             type="button"
                             onClick={handleImageSubmit}
-                            className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80"
+                            className="p-3 text-green-400 border border-green-400 rounded uppercase hover:shadow-lg disabled:opacity-80"
                         >
                             {uploading ? 'Uploading...' : 'Upload'}
                         </button>
                     </div>
-                    {imageUploadError && <p className="text-red-700 text-sm">{imageUploadError}</p>}
+                    {imageUploadError && <p className="text-red-400 text-sm">{imageUploadError}</p>}
                     {formData.imageUrls.length > 0 && formData.imageUrls.map((url, index) => (
-                        <div key={index} className="flex items-center justify-between p-3">
+                        <div key={index} className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
                             <img src={url} alt="Listing Image" className="w-20 h-20 object-contain rounded-lg" />
                             <button
                                 onClick={() => handleRemoveImage(index)}
                                 type="button"
-                                className="text-red-700 p-3 uppercase hover:opacity-75"
+                                className="text-red-400 p-3 uppercase hover:opacity-75"
                             >
                                 Delete
                             </button>
@@ -266,11 +266,11 @@ function UpdateListing() {
                     <button
                         disabled={loading || uploading}
                         type="submit"
-                        className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+                        className="p-3 bg-blue-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
                     >
                         {loading ? 'Updating...' : 'Update Listing'}
                     </button>
-                    {error && <p className="text-red-700 text-sm">{error}</p>}
+                    {error && <p className="text-red-400 text-sm">{error}</p>}
                 </div>
             </form>
         </main>
